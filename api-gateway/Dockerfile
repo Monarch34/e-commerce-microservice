@@ -6,7 +6,7 @@ WORKDIR /app
 COPY . .
 
 # Maven kullanarak projeyi derleyip çalıştırılabilir .jar dosyasını oluşturuyoruz.
-RUN mvn clean package -DskipTests
+RUN mvn -Djava.net.preferIPv4Stack=true clean package -DskipTests
 
 # Adım 2: Sadece uygulamayı çalıştırmak için daha küçük bir Java ortamı kullanıyoruz.
 # Bu, son imajımızın boyutunu önemli ölçüde küçültür.
