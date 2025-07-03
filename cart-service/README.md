@@ -1,42 +1,31 @@
 # Cart Service
 
-The Cart Service manages shopping carts for the e-commerce platform. It is a Spring Boot application that stores cart data in MongoDB and communicates with other services via RabbitMQ and REST calls.
+The Cart Service manages customer shopping carts in the e‑commerce system. It is built with Spring Boot, stores data in MongoDB and communicates with other services via RabbitMQ and REST APIs.
 
 ## Prerequisites
-
 - Java 21
 - Maven
-- Docker with Docker Compose
+- Docker and Docker Compose
 
-## Running the Service
-
-The easiest way to run the service together with MongoDB and RabbitMQ is via the root `docker-compose.yml` file:
+## Running with Docker Compose
+From the repository root run:
 
 ```bash
-# From the repository root
 docker-compose up -d rabbitmq cart-mongodb cart-service
 ```
 
-This starts RabbitMQ (ports `5672` and `15672`), a MongoDB instance (port `27017`) and the Cart Service itself on port `8084`.
+This starts RabbitMQ (`5672`/`15672`), MongoDB (`27017`) and the Cart Service on port `8084`.
 
-During development you can also run the application directly using Maven:
+### Local Development
+You can also run the application directly:
 
 ```bash
 cd cart-service
 ./mvnw spring-boot:run
 ```
 
-## Running Tests
-
-Unit tests can be executed with Maven:
-
-```bash
-./mvnw test
-```
-
 ## Configuration
-
-Default settings are defined in `src/main/resources/application.properties` and can be overridden with environment variables:
+Default values are defined in `src/main/resources/application.properties` and can be overridden with environment variables.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -48,64 +37,49 @@ Default settings are defined in `src/main/resources/application.properties` and 
 | `SPRING_RABBITMQ_PASSWORD` | `guest` | RabbitMQ password |
 | `PRODUCT_SERVICE_URL` | `http://localhost:8083` | Base URL of the Product Service |
 
-## API Endpoints
-
-All endpoints are served under `/api/carts` (also accessible via `/api/cart`). Examples use the `/api/carts` prefix.
+## REST API
+All routes are served under `/api/carts` (also accessible as `/api/cart`). Examples below use `/api/carts`.
 
 ### Add item
-
 `POST /api/carts/{userId}/items`
 
-Adds a product to the user's cart. Creates the cart if it does not exist. The body must contain a product id and quantity:
-
+Request body:
 ```json
 {
   "productId": 1,
   "quantity": 2
 }
 ```
-
-Returns the updated `Cart` document.
+Adds a product to the user’s cart and returns the updated `Cart` document.
 
 ### View cart
-
 `GET /api/carts/{userId}`
 
-Returns a `CartResponseDTO` with the current items for the user.
+Returns a `CartResponseDTO` describing the user’s current items.
 
 ### Update quantity
-
 `PUT /api/carts/{cartIdentifier}/items/{productId}`
 
-Updates the quantity of a product in the specified cart. A body like the following is required:
-
+Request body:
 ```json
 {
   "quantity": 3
 }
 ```
-
-If the quantity becomes zero the item is removed. When the last item is removed the cart document is deleted.
+Sets the quantity of the given product. If the quantity becomes zero the item is removed and the cart is deleted when empty.
 
 ### Remove item
-
 `DELETE /api/carts/{cartIdentifier}/items/{productId}`
 
-Removes the given product from the cart. The cart is deleted if no items remain.
+Removes the product from the cart. The cart itself is deleted if it becomes empty.
 
-## Event Flow
+## Events
+The service publishes and consumes events via RabbitMQ.
 
-The service interacts with RabbitMQ to notify other services and react to updates.
-
-### ItemAddedToCartEvent
-
-Published whenever an item is added to a cart.
-
+### `ItemAddedToCartEvent`
+Published whenever an item is added.
 - **Exchange:** `cartExchange`
 - **Routing key:** `cart.item.added`
-
-Payload example:
-
 ```json
 {
   "cartIdentifier": "1",
@@ -114,12 +88,8 @@ Payload example:
 }
 ```
 
-### OrderCreatedEvent
-
-Consumed from the `order.created.queue`. When received the cart for the given user is cleared.
-
-Payload example:
-
+### `OrderCreatedEvent`
+Consumed from the `order.created.queue`. When received the cart for the user is cleared.
 ```json
 {
   "orderId": 10,
@@ -129,12 +99,8 @@ Payload example:
 }
 ```
 
-### ProductUpdatedEvent
-
-Consumed from the `product.updated.queue`. Updates cart item prices when a product's price changes.
-
-Payload example:
-
+### `ProductUpdatedEvent`
+Consumed from the `product.updated.queue`. Updates item prices when a product changes.
 ```json
 {
   "productId": 5,
@@ -144,15 +110,17 @@ Payload example:
 }
 ```
 
+## Running Tests
+Execute unit tests with:
+```bash
+./mvnw test
+```
+
 ## Building a Docker Image
-
-A Dockerfile is provided. To build and run the container directly:
-
+You can build the container yourself:
 ```bash
 cd cart-service
 docker build -t cart-service .
 docker run -p 8084:8084 cart-service
 ```
-
-The same environment variables shown above can be passed with `-e` options if customization is required.
-
+Environment variables from the table above can be supplied with `-e` options.
