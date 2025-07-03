@@ -1,0 +1,12 @@
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\exception\DuplicateProductNameException.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\ProductServiceApplication.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\controller\ProductController.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\controller\HealthCheckController.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\exception\GlobalExceptionHandler.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\exception\InsufficientStockException.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\model\Product.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\exception\ProductNotFoundException.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\repository\ProductRepository.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\controller\QuantityRequest.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\exception\ErrorResponse.java
+C:\Users\ysf1k\Desktop\Yeni klasör\product-service\src\main\java\com\example\productservice\service\ProductService.java

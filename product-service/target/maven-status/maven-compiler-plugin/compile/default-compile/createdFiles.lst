@@ -1,0 +1,12 @@
+com\example\productservice\controller\ProductController.class
+com\example\productservice\exception\InsufficientStockException.class
+com\example\productservice\repository\ProductRepository.class
+com\example\productservice\controller\QuantityRequest.class
+com\example\productservice\exception\DuplicateProductNameException.class
+com\example\productservice\service\ProductService.class
+com\example\productservice\exception\ProductNotFoundException.class
+com\example\productservice\exception\ErrorResponse.class
+com\example\productservice\ProductServiceApplication.class
+com\example\productservice\exception\GlobalExceptionHandler.class
+com\example\productservice\controller\HealthCheckController.class
+com\example\productservice\model\Product.class
