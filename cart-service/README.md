@@ -50,13 +50,34 @@ Default settings are defined in `src/main/resources/application.properties` and 
 
 ## API Endpoints
 
-All endpoints are served under `/api/carts` (also accessible via `/api/cart`). Examples use the `/api/carts` prefix.
+All endpoints are served under `/api/cart` and require an `X-User-Id` header that identifies the authenticated user.
+
+### Headers
+
+All requests must include:
+
+```
+X-User-Id: <user id>
+```
+
+Replace `<user id>` with the identifier of the user making the request.
 
 ### Add item
 
-`POST /api/carts/{userId}/items`
+`POST /api/cart/items`
 
-Adds a product to the user's cart. Creates the cart if it does not exist. The body must contain a product id and quantity:
+Adds a product to the authenticated user's cart. Creates the cart if it does not exist.
+
+Example request:
+
+```bash
+curl -X POST http://localhost:8084/api/cart/items \
+  -H "X-User-Id: 1" \
+  -H "Content-Type: application/json" \
+  -d '{"productId":1,"quantity":2}'
+```
+
+Request body:
 
 ```json
 {
@@ -65,19 +86,60 @@ Adds a product to the user's cart. Creates the cart if it does not exist. The bo
 }
 ```
 
+Example response:
+
+```json
+{
+  "id": "abc123",
+  "cartIdentifier": "1",
+  "items": [
+    { "productId": 1, "quantity": 2, "price": 9.99 }
+  ],
+  "lastModifiedDate": "2025-07-01T10:00:00"
+}
+```
+
 Returns the updated `Cart` document.
 
 ### View cart
 
-`GET /api/carts/{userId}`
+`GET /api/cart`
+
+Example request:
+
+```bash
+curl -H "X-User-Id: 1" http://localhost:8084/api/cart
+```
+
+Example response:
+
+```json
+{
+  "userId": 1,
+  "items": [
+    { "productId": 1, "quantity": 2, "price": 9.99 }
+  ]
+}
+```
 
 Returns a `CartResponseDTO` with the current items for the user.
 
 ### Update quantity
 
-`PUT /api/carts/{cartIdentifier}/items/{productId}`
+`PUT /api/cart/items/{productId}`
 
-Updates the quantity of a product in the specified cart. A body like the following is required:
+Updates the quantity of a product in the authenticated user's cart.
+
+Example request:
+
+```bash
+curl -X PUT http://localhost:8084/api/cart/items/1 \
+  -H "X-User-Id: 1" \
+  -H "Content-Type: application/json" \
+  -d '{"quantity":3}'
+```
+
+Request body:
 
 ```json
 {
@@ -85,13 +147,46 @@ Updates the quantity of a product in the specified cart. A body like the followi
 }
 ```
 
+Example response:
+
+```json
+{
+  "id": "abc123",
+  "cartIdentifier": "1",
+  "items": [
+    { "productId": 1, "quantity": 3, "price": 9.99 }
+  ],
+  "lastModifiedDate": "2025-07-01T10:05:00"
+}
+```
+
 If the quantity becomes zero the item is removed. When the last item is removed the cart document is deleted.
 
 ### Remove item
 
-`DELETE /api/carts/{cartIdentifier}/items/{productId}`
+`DELETE /api/cart/items/{productId}`
 
-Removes the given product from the cart. The cart is deleted if no items remain.
+Removes the given product from the cart.
+
+Example request:
+
+```bash
+curl -X DELETE http://localhost:8084/api/cart/items/1 \
+  -H "X-User-Id: 1"
+```
+
+Example response:
+
+```json
+{
+  "id": "abc123",
+  "cartIdentifier": "1",
+  "items": [],
+  "lastModifiedDate": "2025-07-01T10:06:00"
+}
+```
+
+The cart is deleted if no items remain.
 
 ## Event Flow
 
