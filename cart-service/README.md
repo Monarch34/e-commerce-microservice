@@ -77,6 +77,15 @@ curl -X POST http://localhost:8084/api/cart/items \
   -d '{"productId":1,"quantity":2}'
 ```
 
+Request body:
+
+```json
+{
+  "productId": 1,
+  "quantity": 2
+}
+```
+
 Example response:
 
 ```json
@@ -128,6 +137,14 @@ curl -X PUT http://localhost:8084/api/cart/items/1 \
   -H "X-User-Id: 1" \
   -H "Content-Type: application/json" \
   -d '{"quantity":3}'
+```
+
+Request body:
+
+```json
+{
+  "quantity": 3
+}
 ```
 
 Example response:
