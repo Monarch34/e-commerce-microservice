@@ -66,7 +66,7 @@ public class OrderService {
         Order newOrder = new Order();
         newOrder.setUserId(userId); // CHANGED: Used userId parameter
         newOrder.setShippingAddress(orderRequest.getShippingAddress());
-        newOrder.setStatus(getObject().PENDING); // Initial status
+        newOrder.setStatus(OrderStatus.PENDING); // Initial status
 
         // Calculate total amount and add order items
         BigDecimal totalAmount = BigDecimal.ZERO;
@@ -122,15 +122,12 @@ public class OrderService {
                     .map(item -> new OrderItemDTO(item.getProductId(), item.getQuantity(), item.getPriceAtTimeOfOrder()))
                     .collect(Collectors.toList())
         );
-        //rabbitTemplate.convertAndSend(exchangeName, routingKey, event);
-        //System.out.println("Published OrderCreatedEvent for order ID: " + savedOrder.getId());
+        rabbitTemplate.convertAndSend(exchangeName, routingKey, event);
+        System.out.println("Published OrderCreatedEvent for order ID: " + savedOrder.getId());
 
         return savedOrder;
     }
 
-    private static java.lang.Object getObject() {
-        return OrderStatus;
-    }
 
     public Optional<Order> findOrderById(Long orderId) {
         return orderRepository.findById(orderId);
