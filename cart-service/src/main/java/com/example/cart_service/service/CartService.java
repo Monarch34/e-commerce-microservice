@@ -67,8 +67,8 @@ public class CartService {
         cart.setLastModifiedDate(LocalDateTime.now());
         Cart saved = cartRepository.save(cart);
 
-        //ItemAddedToCartEvent event = new ItemAddedToCartEvent(cartIdentifier, productId, quantity);
-        //rabbitTemplate.convertAndSend(itemAddedExchange, itemAddedRoutingKey, event);
+        ItemAddedToCartEvent event = new ItemAddedToCartEvent(cartIdentifier, productId, quantity);
+        rabbitTemplate.convertAndSend(itemAddedExchange, itemAddedRoutingKey, event);
 
         return saved;
     }

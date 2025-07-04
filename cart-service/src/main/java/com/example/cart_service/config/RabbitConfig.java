@@ -14,6 +14,9 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
     @Value("${rabbitmq.order.exchange:order_exchange}")
     private String orderExchangeName;
+
+    @Value("${cart.item.added.exchange:cartExchange}")
+    private String itemAddedExchange;
     @Bean
     public Queue orderCreatedQueue() {
         return new Queue("order.created.queue", true);
@@ -32,6 +35,11 @@ public class RabbitConfig {
     @Bean
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public TopicExchange cartExchange() {
+        return new TopicExchange(itemAddedExchange);
     }
 
     @Bean
